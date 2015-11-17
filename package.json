@@ -1,0 +1,23 @@
+{
+  "name": "cordova-plugin-watch",
+  "version": "0.0.1",
+  "description": "Cordova Watch Plugin",
+  "cordova": {
+    "id": "cordova-plugin-watch",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tbd"
+  },
+  "keywords": [
+    "cordova",
+    "watch",
+    "ecosystem:cordova"
+    "cordova-ios"
+  ],
+  "author": "Apache Software Foundation",
+  "license": "Apache 2.0"
+}
