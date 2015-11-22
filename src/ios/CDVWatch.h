@@ -20,11 +20,22 @@
 #import <UIKit/UIKit.h>
 #import <Cordova/CDVPlugin.h>
 
-@interface CDVWatch : CDVPlugin <WCSessionDelegate>
-{}
+#import <WatchConnectivity/WatchConnectivity.h>
 
+@interface WCSessionManager : NSObject <WCSessionDelegate> {}
+
+@property (nonatomic, strong, readonly) WCSession * session;
+
++ (WCSessionManager *) shared;
+
+@end
+
+@interface CDVWatch : CDVPlugin <WCSessionDelegate> {}
+
+- (void) registerForWatchEvents:(CDVInvokedUrlCommand*)command;
 - (void) sendMessage:(CDVInvokedUrlCommand*)command;
 - (void) transferUserInfo:(CDVInvokedUrlCommand*)command;
 - (void) updateApplicationContext:(CDVInvokedUrlCommand*)command;
+- (void) getLatestApplicationContext:(CDVInvokedUrlCommand*)command;
 
 @end

@@ -25,25 +25,7 @@ var argscheck = require('cordova/argscheck'),
     exec = require('cordova/exec'),
     cordova = require('cordova');
 
-// channel.createSticky('onCordovaInfoReady');
-// Tell cordova channel to wait on the CordovaInfoReady event
-// channel.waitForInitialization('onCordovaInfoReady');
-
-function Watch() {
-
-
-    var me = this;
-
-    // channel.onCordovaReady.subscribe(function() {
-    //     me.getInfo(function(info) {
-    //
-    //         channel.onCordovaInfoReady.fire();
-    //     },function(e) {
-    //
-    //         utils.alert("[ERROR] Error initializing Cordova: " + e);
-    //     });
-    // });
-}
+function Watch() {};
 
 /**
  * Init
@@ -56,6 +38,11 @@ function Watch() {
 //     exec(successCallback, errorCallback, "Watch", "init", []);
 // };
 
+Watch.prototype.registerForWatchEvents = function(successCallback, errorCallback) {
+    argscheck.checkArgs('fF', 'Watch.registerForWatchEvents', arguments);
+    exec(successCallback, errorCallback, "Watch", "registerForWatchEvents", []);
+};
+
 Watch.prototype.sendMessage = function(message, successCallback, errorCallback) {
     argscheck.checkArgs('ofF', 'Watch.sendMessage', arguments);
     exec(successCallback, errorCallback, "Watch", "sendMessage", [message]);
@@ -67,8 +54,13 @@ Watch.prototype.transferUserInfo = function(info, successCallback, errorCallback
 };
 
 Watch.prototype.updateApplicationContext = function(context, successCallback, errorCallback) {
-    argscheck.checkArgs('ofF', 'Watch.transferUserInfo', arguments);
+    argscheck.checkArgs('ofF', 'Watch.updateApplicationContext', arguments);
     exec(successCallback, errorCallback, "Watch", "updateApplicationContext", [context]);
+};
+
+Watch.prototype.getLatestApplicationContext = function(successCallback, errorCallback) {
+    argscheck.checkArgs('fF', 'Watch.getLatestApplicationContext', arguments);
+    exec(successCallback, errorCallback, "Watch", "getLatestApplicationContext", []);
 };
 
 module.exports = new Watch();
