@@ -112,10 +112,12 @@
 
 -(void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *,id> *)message replyHandler:(void (^)(NSDictionary<NSString *,id> * _Nonnull))replyHandler {
     if (message[@"local_notifications"]) {
+        // I'm not forwarding this to the watch because this object contains NSDate
         [self scheduleLocalNotification:message[@"local_notifications"] replyHandler:replyHandler];
-    }
-    if (self.plugin)
+    } else if (self.plugin) {
         [self.plugin session:session didReceiveMessage:message replyHandler:replyHandler];
+    }
+
 }
 
 - (void) scheduleLocalNotification:(NSDictionary *)notificationInfo replyHandler:(void (^)(NSDictionary<NSString *,id> * _Nonnull))replyHandler {
@@ -134,13 +136,12 @@
             UILocalNotification * notif = [[UILocalNotification alloc] init];
             notif.fireDate = event[@"date"];
             notif.timeZone = [NSTimeZone defaultTimeZone];
+            notif.alertTitle = event[@"title"];
             notif.alertBody = event[@"message"];
             notif.soundName = UILocalNotificationDefaultSoundName;
+            notif.userInfo = event[@"info"];
             [[UIApplication sharedApplication] scheduleLocalNotification:notif];
         }
-//        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-//            [self displayWatchWarning];
-//        }
     } else if (notificationInfo[@"cancel"]) {
         [[UIApplication sharedApplication] cancelAllLocalNotifications];
     }
@@ -192,7 +193,7 @@
 - (void) session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *,id> *)message replyHandler:(void (^)(NSDictionary<NSString *,id> * _Nonnull))replyHandler {
     // Communicate to the cordova webview instance with the registered callback
     // Looks like the cordova instance can never reply to this message
-    CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:message];
+    CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"message":message}];
     result.keepCallback = @YES;
     [self.commandDelegate sendPluginResult:result callbackId:self.registeredCallbackId];
 }
@@ -221,7 +222,7 @@
 
 - (void) session:(WCSession *)session didReceiveApplicationContext:(NSDictionary<NSString *,id> *)applicationContext {
     // Communicate to the cordova webview instance with the registered callback
-    CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:applicationContext];
+    CDVPluginResult * result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"context":applicationContext}];
     result.keepCallback = @YES;
     [self.commandDelegate sendPluginResult:result callbackId:self.registeredCallbackId];
 }
@@ -231,7 +232,7 @@
     if (!context) {
         context = [NSDictionary dictionary];
     }
-    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:context];
+    CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:@{@"context":context}];
     [self.commandDelegate sendPluginResult:result callbackId:command.callbackId];
 }
 
