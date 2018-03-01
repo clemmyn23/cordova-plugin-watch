@@ -15,7 +15,7 @@
   "keywords": [
     "cordova",
     "watch",
-    "ecosystem:cordova"
+    "ecosystem:cordova",
     "cordova-ios"
   ],
   "author": "Apache Software Foundation",
